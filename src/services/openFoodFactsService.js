@@ -1,9 +1,13 @@
+import { setProducts, setLoading, setError, addToSearchHistory, setLastSearch } from '../store/productStore';
+
 const BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl';
 
-export const searchProducts = async (query) => {
+export const searchProducts = async (query, dispatch) => {
   try {
-    const url = `${BASE_URL}?search_terms=${encodeURIComponent(query)}&json=1`;
+    dispatch(setLoading(true));
+    dispatch(setLastSearch(query));
     
+    const url = `${BASE_URL}?search_terms=${encodeURIComponent(query)}&json=1`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -13,30 +17,25 @@ export const searchProducts = async (query) => {
     });
     
     if (!response.ok) {
-      console.error('Erreur HTTP:', response.status, response.statusText);
-      return [];
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
     
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
-      console.error('Réponse non-JSON reçue:', contentType);
-      return [];
+      throw new Error('Réponse non-JSON reçue');
     }
     
     const data = await response.json();
     
     if (!data.products || !Array.isArray(data.products)) {
-      console.error('Format de réponse inattendu:', data);
-      return [];
+      throw new Error('Format de réponse inattendu');
     }
     
-    if (data.products.length > 0) {
-      console.log('Premier produit:', data.products[0]);
-    }
-    
+    dispatch(setProducts(data.products));
+    dispatch(addToSearchHistory(query));
     return data.products;
   } catch (error) {
-    console.error('Erreur lors de la recherche de produits:', error);
+    dispatch(setError(error.message));
     return [];
   }
 };

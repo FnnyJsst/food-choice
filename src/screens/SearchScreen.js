@@ -1,41 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, FlatList, ActivityIndicator } from 'react-native';
-import { searchProducts, getProductImageUrl, getNutriScore, getBrands } from '../services/openFoodFactsService';
+import { useDispatch, useSelector } from 'react-redux';
+import { searchProducts } from '../services/openFoodFactsService';
+import { clearProducts } from '../store/productStore';
 import FavoriteCards from '../components/cards/FavoriteCards';
 
 const SearchScreen = () => {
+  const dispatch = useDispatch();
+  const { products, loading, error, searchHistory } = useSelector(state => state.products);
   const [searchQuery, setSearchQuery] = useState('');
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [debouncedQuery, setDebouncedQuery] = useState('');
 
-  const handleSearch = async (text) => {
-    setSearchQuery(text);
-    if (text.length === 0) {
-      setProducts([]);
-      return;
-    }
-    if (text.length > 2) {
-      setLoading(true);
-      const results = await searchProducts(text);
+  // Debounce effect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 500);
 
-      const filteredResults = results.filter(result => result.product_name.toLowerCase().includes(text.toLowerCase()));
-      if (filteredResults.length > 0) {
-        setProducts(filteredResults);
-      } else {
-        setProducts([]);
-      }
-      setLoading(false);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Effect pour la recherche
+  useEffect(() => {
+    if (debouncedQuery.length > 2) {
+      searchProducts(debouncedQuery, dispatch);
     } else {
-      setProducts([]);
+      dispatch(clearProducts());
     }
-  };
+  }, [debouncedQuery, dispatch]);
+
+  const handleSearch = useCallback((text) => {
+    setSearchQuery(text);
+  }, []);
 
   const renderProduct = ({ item }) => (
     <FavoriteCards
       title={item.product_name}
-      brand={getBrands(item)}
-      nutriscore={getNutriScore(item)}
-      imageUrl={getProductImageUrl(item)}
+      brand={item.brands}
+      nutriscore={item.nutriscore_grade}
+      imageUrl={item.image_url}
     />
   );
 
@@ -52,12 +55,19 @@ const SearchScreen = () => {
       </View>
       {loading ? (
         <ActivityIndicator size="large" color="#81D980" style={styles.loader} />
+      ) : error ? (
+        <Text style={styles.error}>{error}</Text>
+      ) : products.length === 0 ? (
+        <Text style={styles.noResults}>Aucun résultat trouvé</Text>
       ) : (
         <FlatList
           data={products}
           renderItem={renderProduct}
           keyExtractor={(item) => item.code}
           contentContainerStyle={styles.listContainer}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={5}
         />
       )}
     </View>
@@ -100,6 +110,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  error: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  noResults: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#666',
   },
 });
 

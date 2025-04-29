@@ -12,6 +12,17 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      [
+        "react-native-scanbot-barcode-scanner-sdk",
+        {
+          "iOSCameraUsageDescription": "Barcode Camera permissions",
+          "androidCameraPermission": true,
+          "androidCameraFeature": true,
+          "mavenURLs": true
+        }
+      ]
+    ],
     "ios": {
       "supportsTablet": true
     },

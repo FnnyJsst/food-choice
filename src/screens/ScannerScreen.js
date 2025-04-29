@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+
 const ScannerScreen = () => {
   return (
     <View style={styles.container}>
