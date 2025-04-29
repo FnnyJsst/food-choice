@@ -1,4 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { addFavorite, removeFavorite, getFavorites, initDatabase } from '../services/databaseService';
+
+// Initialisation de la base de données
+initDatabase().catch(console.error);
 
 const initialState = {
   products: [],
@@ -9,18 +13,37 @@ const initialState = {
   lastSearch: '',
 };
 
+// Thunks pour les opérations asynchrones
+export const loadFavorites = createAsyncThunk(
+  'products/loadFavorites',
+  async () => {
+    const favorites = await getFavorites();
+    return favorites;
+  }
+);
+
+export const addToFavoritesAsync = createAsyncThunk(
+  'products/addToFavorites',
+  async (product) => {
+    await addFavorite(product);
+    return product;
+  }
+);
+
+export const removeFromFavoritesAsync = createAsyncThunk(
+  'products/removeFromFavorites',
+  async (code) => {
+    await removeFavorite(code);
+    return code;
+  }
+);
+
 const productSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
     setProducts: (state, action) => {
-      state.products = action.payload.map(product => ({
-        code: product.code,
-        product_name: product.product_name,
-        brands: product.brands,
-        nutriscore_grade: product.nutriscore_grade,
-        image_url: product.image_url
-      }));
+      state.products = action.payload;
       state.loading = false;
       state.error = null;
     },
@@ -31,20 +54,6 @@ const productSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-    addToFavorites: (state, action) => {
-      if (!state.favorites.some(fav => fav.code === action.payload.code)) {
-        state.favorites.push({
-          code: action.payload.code,
-          product_name: action.payload.product_name,
-          brands: action.payload.brands,
-          nutriscore_grade: action.payload.nutriscore_grade,
-          image_url: action.payload.image_url
-        });
-      }
-    },
-    removeFromFavorites: (state, action) => {
-      state.favorites = state.favorites.filter(fav => fav.code !== action.payload);
-    },
     setLastSearch: (state, action) => {
       state.lastSearch = action.payload;
     },
@@ -52,14 +61,37 @@ const productSlice = createSlice({
       state.products = [];
     }
   },
+  extraReducers: (builder) => {
+    builder
+      // Load Favorites
+      .addCase(loadFavorites.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(loadFavorites.fulfilled, (state, action) => {
+        state.favorites = action.payload;
+        state.loading = false;
+      })
+      .addCase(loadFavorites.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.loading = false;
+      })
+      // Add to Favorites
+      .addCase(addToFavoritesAsync.fulfilled, (state, action) => {
+        if (!state.favorites.some(fav => fav.code === action.payload.code)) {
+          state.favorites.push(action.payload);
+        }
+      })
+      // Remove from Favorites
+      .addCase(removeFromFavoritesAsync.fulfilled, (state, action) => {
+        state.favorites = state.favorites.filter(fav => fav.code !== action.payload);
+      });
+  },
 });
 
 export const {
   setProducts,
   setLoading,
   setError,
-  addToFavorites,
-  removeFromFavorites,
   setLastSearch,
   clearProducts
 } = productSlice.actions;

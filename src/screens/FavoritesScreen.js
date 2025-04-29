@@ -1,16 +1,76 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadFavorites, removeFromFavoritesAsync } from '../store/productStore';
 import FavoriteCards from '../components/cards/FavoriteCards';
+
 const FavoritesScreen = () => {
+  const dispatch = useDispatch();
+  const { favorites, loading, error } = useSelector(state => state.products);
+
+  useEffect(() => {
+    dispatch(loadFavorites());
+  }, [dispatch]);
+
+  const handleRemoveFavorite = (code) => {
+    Alert.alert(
+      'Retirer des favoris',
+      'Voulez-vous vraiment retirer ce produit des favoris ?',
+      [
+        {
+          text: 'Annuler',
+          style: 'cancel'
+        },
+        {
+          text: 'Retirer',
+          onPress: () => dispatch(removeFromFavoritesAsync(code)),
+          style: 'destructive'
+        }
+      ]
+    );
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>Chargement des favoris...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.error}>{error}</Text>
+      </View>
+    );
+  }
+
+  if (favorites.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>Aucun favori pour le moment</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-      <Text style={styles.title}>Mes favoris</Text>
-      </View>
-      <View style={styles.dateContainer}>
-        <Text style={styles.date}>28 avril 2025</Text>
-      </View>
-      <FavoriteCards />
+      <FlatList
+        data={favorites}
+        renderItem={({ item }) => (
+          <TouchableOpacity onLongPress={() => handleRemoveFavorite(item.code)}>
+            <FavoriteCards
+              title={item.product_name}
+              brand={item.brands}
+              nutriscore={item.nutriscore_grade}
+              imageUrl={item.image_url}
+            />
+          </TouchableOpacity>
+        )}
+        keyExtractor={item => item.code}
+        contentContainerStyle={styles.listContainer}
+      />
     </View>
   );
 };
@@ -18,32 +78,23 @@ const FavoritesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 20,
+    paddingTop: 50,
   },
-  header: {
-    width: '100%',
-    height: 100,
-    backgroundColor: '#fff',
-    justifyContent: 'flex-start',
-    top: 50,
+  text: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#666',
   },
-  title: {
-    fontSize: 22,
-    fontWeight: '600',
-    color: '#333',
+  error: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 20,
+    color: 'red',
   },
-  dateContainer: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'flex-start',
-  },
-  date: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: 'gray',
+  listContainer: {
+    padding: 15,
   },
 });
 

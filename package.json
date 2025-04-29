@@ -22,7 +22,9 @@
     "react-native-scanbot-barcode-scanner-sdk": "^6.2.1",
     "react-native-vector-icons": "^10.2.0",
     "react-redux": "^9.2.0",
-    "expo-camera": "~16.0.18"
+    "expo-camera": "~16.0.18",
+    "expo-sqlite": "~15.1.4",
+    "@react-native-async-storage/async-storage": "1.23.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

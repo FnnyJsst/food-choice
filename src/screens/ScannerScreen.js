@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useDispatch } from 'react-redux';
 import { getProductByBarcode } from '../services/openFoodFactsService';
+import { addToFavoritesAsync } from '../store/productStore';
 
 const ScannerScreen = () => {
   const [isScanning, setIsScanning] = useState(false);
@@ -10,7 +11,6 @@ const ScannerScreen = () => {
   const dispatch = useDispatch();
 
   const handleBarCodeScanned = async ({ data }) => {
-    console.log("je scanne")
     if (isScanning) return;
     
     setIsScanning(true);
@@ -21,6 +21,13 @@ const ScannerScreen = () => {
           'Produit trouvé',
           `Nom: ${product.product_name}\nMarque: ${product.brands}`,
           [
+            {
+              text: 'Ajouter aux favoris',
+              onPress: () => {
+                dispatch(addToFavoritesAsync(product));
+                setIsScanning(false);
+              }
+            },
             {
               text: 'OK',
               onPress: () => setIsScanning(false)
@@ -86,7 +93,7 @@ const ScannerScreen = () => {
         <Text style={styles.instructions}>
           Scannez le code-barres d'un produit
         </Text>
-     </View>
+      </View>
     </View>
   );
 };
@@ -127,13 +134,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
     padding: 20,
     borderRadius: 10,
-    marginBottom: 20,
-  },
-  flipButton: {
-    backgroundColor: '#81D980',
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 20,
   },
 });
 
