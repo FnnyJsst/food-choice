@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ScannerScreen from './src/screens/ScannerScreen';
 
 // Import des écrans
-import HomeScreen from './src/screens/HomeScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import FavoritesScreen from './src/screens/FavoritesScreen';
 import ProfileScreen from './src/screens/ProfileScreen';

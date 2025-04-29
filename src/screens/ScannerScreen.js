@@ -21,6 +21,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
+  backgroundImage: {
+    width: '100%',
+    height: '100%',
+  },
 });
 
 export default ScannerScreen; 

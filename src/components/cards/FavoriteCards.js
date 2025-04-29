@@ -1,23 +1,119 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-const FavoriteCards = () => {
+const FavoriteCards = ({ title, brand, nutriscore, imageUrl }) => {
   return (
     <View style={styles.container}>
-        <View style={styles.card}>
-            <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>Produit Favori</Text>
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardImageContainer}>
+            <Image 
+              source={imageUrl ? { uri: imageUrl } : require('../../../assets/burger.png')} 
+              style={styles.cardImage} 
+            />
+          </View>
+          <View style={styles.cardInfoContainer}>
+            <View style={styles.cardTitleContainer}>
+              <Text style={styles.cardTitle}>{title || 'Produit'}</Text>
+              <Ionicons name="heart-outline" size={15} color="gray" />
             </View>
+            <Text style={styles.cardBrand}>{brand || 'Marque inconnue'}</Text>
+            <View style={styles.cardNutriscoreContainer}>
+              <View style={[styles.nutriscoreCircle, { backgroundColor: getNutriScoreColor(nutriscore) }]} />
+              <Text style={styles.cardNutriscore}>{nutriscore || '?'}</Text>
+            </View>
+          </View>
         </View>
+      </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-});
+const getNutriScoreColor = (score) => {
+  switch (score) {
+    case 'A':
+      return '#81D980';
+    case 'B':
+      return '#B8E986';
+    case 'C':
+      return '#FED766';
+    case 'D':
+      return '#FF9F1C';
+    case 'E':
+      return '#FF6B6B';
+    default:
+      return '#CCCCCC';
+  }
+};
 
 export default FavoriteCards;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    width: '100%',
+    padding: 15,
+  },
+  card: {
+    width: '100%',
+    height: 100,
+    borderRadius: 15,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    padding: 10,
+    alignItems: 'center',
+  },
+  cardImageContainer: {
+    marginRight: 15,
+  },
+  cardImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+  },
+  cardInfoContainer: {
+    flex: 1,
+  },
+  cardTitleContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+  },
+  cardBrand: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 5,
+  },
+  cardNutriscoreContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  nutriscoreCircle: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  cardNutriscore: {
+    fontSize: 14,
+    color: '#333',
+  },
+});
