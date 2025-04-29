@@ -10,19 +10,16 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "plugins": [
+      "backgroundColor": "#ffffff",
+      "plugins": [
       [
-        "react-native-scanbot-barcode-scanner-sdk",
+        "expo-camera",
         {
-          "iOSCameraUsageDescription": "Barcode Camera permissions",
-          "androidCameraPermission": true,
-          "androidCameraFeature": true,
-          "mavenURLs": true
+          "cameraPermission": "Autoriser l'application à accéder à votre caméra pour scanner les codes-barres."
         }
       ]
-    ],
+    ]
+    },
     "ios": {
       "supportsTablet": true
     },

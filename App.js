@@ -14,6 +14,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+
   return (
     <Provider store={store}>
       <NavigationContainer>
