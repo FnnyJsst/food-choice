@@ -10,10 +10,20 @@ const SearchScreen = () => {
 
   const handleSearch = async (text) => {
     setSearchQuery(text);
+    if (text.length === 0) {
+      setProducts([]);
+      return;
+    }
     if (text.length > 2) {
       setLoading(true);
       const results = await searchProducts(text);
-      setProducts(results);
+
+      const filteredResults = results.filter(result => result.product_name.toLowerCase().includes(text.toLowerCase()));
+      if (filteredResults.length > 0) {
+        setProducts(filteredResults);
+      } else {
+        setProducts([]);
+      }
       setLoading(false);
     } else {
       setProducts([]);
@@ -64,6 +74,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingHorizontal: 20,
     backgroundColor: '#fff',
+    marginTop: 50,
   },
   input: {
     width: '100%',

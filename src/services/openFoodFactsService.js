@@ -1,17 +1,46 @@
-const BASE_URL = 'https://world.openfoodfacts.org/api/v2';
+const BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl';
 
 export const searchProducts = async (query) => {
   try {
-    const response = await fetch(
-      `${BASE_URL}/search?search_terms=${encodeURIComponent(query)}`
-    );
+    const url = `${BASE_URL}?search_terms=${encodeURIComponent(query)}&json=1`;
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      console.error('Erreur HTTP:', response.status, response.statusText);
+      return [];
+    }
+    
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      console.error('Réponse non-JSON reçue:', contentType);
+      return [];
+    }
+    
     const data = await response.json();
-    return data.products || [];
+    
+    if (!data.products || !Array.isArray(data.products)) {
+      console.error('Format de réponse inattendu:', data);
+      return [];
+    }
+    
+    if (data.products.length > 0) {
+      console.log('Premier produit:', data.products[0]);
+    }
+    
+    return data.products;
   } catch (error) {
     console.error('Erreur lors de la recherche de produits:', error);
     return [];
   }
 };
+
 
 export const getProductByBarcode = async (barcode) => {
   try {
