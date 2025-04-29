@@ -10,6 +10,7 @@ const ScannerScreen = () => {
   const dispatch = useDispatch();
 
   const handleBarCodeScanned = async ({ data }) => {
+    console.log("je scanne")
     if (isScanning) return;
     
     setIsScanning(true);
@@ -75,10 +76,10 @@ const ScannerScreen = () => {
     <View style={styles.container}>
       <CameraView 
         style={StyleSheet.absoluteFillObject}
-        // facing={facing}
-        onBarCodeScanned={isScanning ? undefined : handleBarCodeScanned}
+        isFocused={true}
+        onBarcodeScanned={isScanning ? undefined : handleBarCodeScanned}
         barcodeScannerSettings={{
-          barcodeTypes: ['ean13', 'ean8', 'upc', 'upce'],
+          barcodeTypes: ['ean13', 'ean8', 'upc', 'upce', 'qr', 'code128'],
         }}
       />
       <View style={styles.overlay}>
