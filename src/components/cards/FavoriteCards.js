@@ -1,31 +1,32 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
-import { useDispatch } from 'react-redux';
-import { addToFavoritesAsync } from '../../store/productStore';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { addToFavoritesAsync, removeFromFavoritesAsync } from '../../store/productStore';
 
 const FavoriteCards = ({ title, brand, nutriscore, imageUrl, product }) => {
   const dispatch = useDispatch();
-  // Convertir le nutriscore en majuscules une seule fois
-  let nutriscoreUpper;
-  if (nutriscore.length === 1) {
-    nutriscoreUpper = nutriscore.toUpperCase();
-  } else {
-    nutriscoreUpper = 'Non spécifié';
-  }
-  // if (nutriscoreUpper === 'UNKNOW') {
-  //   nutriscoreUpper = 'Non spécifié';
-  // }
+  const favorites = useSelector(state => state.products.favorites);
+  const isFavorite = favorites.some(fav => fav.code === product?.code);
 
-  const handleAddToFavorites = () => {
-    console.log('Tentative d\'ajout aux favoris:', product);
+  const handleToggleFavorite = () => {
     if (!product) {
       console.log('Erreur: product est undefined');
       return;
     }
-    dispatch(addToFavoritesAsync(product));
+    if (isFavorite) {
+      dispatch(removeFromFavoritesAsync(product.code));
+    } else {
+      dispatch(addToFavoritesAsync(product));
+    }
   };
+
+  const getNutriScoreDisplay = (score) => {
+    if (!score) return 'Non spécifié';
+    return score.length === 1 ? score.toUpperCase() : 'Non spécifié';
+  };
+
+  const nutriscoreDisplay = getNutriScoreDisplay(nutriscore);
 
   return (
     <View style={styles.container}>
@@ -34,20 +35,25 @@ const FavoriteCards = ({ title, brand, nutriscore, imageUrl, product }) => {
           <View style={styles.cardImageContainer}>
             <Image 
               source={imageUrl ? { uri: imageUrl } : require('../../../assets/burger.png')} 
-              style={styles.cardImage} 
+              style={styles.cardImage}
+              onError={(e) => console.log('Erreur de chargement de l\'image:', e.nativeEvent.error)} 
             />
           </View>
           <View style={styles.cardInfoContainer}>
             <View style={styles.cardTitleContainer}>
               <Text style={styles.cardTitle}>{title || 'Produit'}</Text>
-              <TouchableOpacity onPress={handleAddToFavorites}>
-                <Ionicons name="heart-outline" size={15} color="gray" />
+              <TouchableOpacity onPress={handleToggleFavorite}>
+                <Ionicons 
+                  name={isFavorite ? "heart" : "heart-outline"} 
+                  size={15} 
+                  color={isFavorite ? "#FF6B6B" : "gray"} 
+                />
               </TouchableOpacity>
             </View>
             <Text style={styles.cardBrand}>{brand || 'Marque inconnue'}</Text>
             <View style={styles.cardNutriscoreContainer}>
-              <View style={[styles.nutriscoreCircle, { backgroundColor: getNutriScoreColor(nutriscoreUpper) }]} />
-              <Text style={styles.cardNutriscore}>{nutriscoreUpper}</Text>
+              <View style={[styles.nutriscoreCircle, { backgroundColor: getNutriScoreColor(nutriscoreDisplay) }]} />
+              <Text style={styles.cardNutriscore}>{nutriscoreDisplay}</Text>
             </View>
           </View>
         </View>
