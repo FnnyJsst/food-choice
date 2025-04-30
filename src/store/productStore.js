@@ -109,7 +109,6 @@ export const {
   setProducts,
   setLoading,
   setError,
-  setLastSearch,
   clearProducts
 } = productSlice.actions;
 

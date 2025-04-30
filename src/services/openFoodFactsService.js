@@ -1,4 +1,4 @@
-import { setProducts, setLoading, setError, addToSearchHistory, setLastSearch } from '../store/productStore';
+import { setProducts, setLoading, setError } from '../store/productStore';
 
 const BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl';
 

@@ -8,7 +8,15 @@ import { addToFavoritesAsync } from '../../store/productStore';
 const FavoriteCards = ({ title, brand, nutriscore, imageUrl, product }) => {
   const dispatch = useDispatch();
   // Convertir le nutriscore en majuscules une seule fois
-  const nutriscoreUpper = nutriscore?.toUpperCase();
+  let nutriscoreUpper;
+  if (nutriscore.length === 1) {
+    nutriscoreUpper = nutriscore.toUpperCase();
+  } else {
+    nutriscoreUpper = 'Non spécifié';
+  }
+  // if (nutriscoreUpper === 'UNKNOW') {
+  //   nutriscoreUpper = 'Non spécifié';
+  // }
 
   const handleAddToFavorites = () => {
     console.log('Tentative d\'ajout aux favoris:', product);
@@ -39,7 +47,7 @@ const FavoriteCards = ({ title, brand, nutriscore, imageUrl, product }) => {
             <Text style={styles.cardBrand}>{brand || 'Marque inconnue'}</Text>
             <View style={styles.cardNutriscoreContainer}>
               <View style={[styles.nutriscoreCircle, { backgroundColor: getNutriScoreColor(nutriscoreUpper) }]} />
-              <Text style={styles.cardNutriscore}>{nutriscoreUpper || '?'}</Text>
+              <Text style={styles.cardNutriscore}>{nutriscoreUpper}</Text>
             </View>
           </View>
         </View>
@@ -60,6 +68,8 @@ const getNutriScoreColor = (score) => {
       return '#FF9F1C';
     case 'E':
       return '#FF6B6B';
+    case 'Non spécifié':
+      return '#CCCCCC';
     default:
       return '#CCCCCC';
   }

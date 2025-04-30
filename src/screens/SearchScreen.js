@@ -34,8 +34,11 @@ const SearchScreen = () => {
   }, []);
 
   const renderProduct = ({ item }) => {
-    // Convertir le nutriscore en majuscules
-    const nutriscore = item.nutrition_grades?.toUpperCase() || '?';
+    console.log('Produit complet:', item);
+    console.log('Nutrition grades:', item.nutrition_grades);
+    // Gérer le cas où le nutriscore n'est pas spécifié
+    const nutriscore = item.nutrition_grades ? item.nutrition_grades.toUpperCase() : 'Non spécifié';
+    console.log('Nutriscore après traitement:', nutriscore);
     return (
       <FavoriteCards
         product={item}
