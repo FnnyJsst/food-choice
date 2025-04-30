@@ -6,17 +6,18 @@ import ScannerScreen from './src/screens/ScannerScreen';
 import { Provider } from 'react-redux';
 import store from './src/store';
 
-
 // Import des écrans
 import SearchScreen from './src/screens/SearchScreen';
 import FavoritesScreen from './src/screens/FavoritesScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 
+// Création du navigateur en tabs
 const Tab = createBottomTabNavigator();
 
 const App = () => {
 
   return (
+    // Création du store pour stocker les différents états
     <Provider store={store}>
       <NavigationContainer>
         <Tab.Navigator
@@ -39,10 +40,7 @@ const App = () => {
             tabBarActiveTintColor: '#81D980',
             tabBarInactiveTintColor: 'gray',
             tabBarStyle: {
-              backgroundColor: '#fff',
-              borderTopWidth: 0,
               elevation: 8,
-              shadowColor: '#000',
               shadowOffset: {
                 width: 0,
                 height: -4,
@@ -52,8 +50,7 @@ const App = () => {
               height: 75,
               paddingTop: 10,
               paddingBottom: 10,
-              borderTopLeftRadius: 25,
-              borderTopRightRadius: 25,
+              borderRadius: 25,
               position: 'absolute',
               bottom: 0,
               left: 0,

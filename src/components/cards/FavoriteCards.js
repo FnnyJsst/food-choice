@@ -7,6 +7,8 @@ import { addToFavoritesAsync } from '../../store/productStore';
 
 const FavoriteCards = ({ title, brand, nutriscore, imageUrl, product }) => {
   const dispatch = useDispatch();
+  // Convertir le nutriscore en majuscules une seule fois
+  const nutriscoreUpper = nutriscore?.toUpperCase();
 
   const handleAddToFavorites = () => {
     console.log('Tentative d\'ajout aux favoris:', product);
@@ -36,8 +38,8 @@ const FavoriteCards = ({ title, brand, nutriscore, imageUrl, product }) => {
             </View>
             <Text style={styles.cardBrand}>{brand || 'Marque inconnue'}</Text>
             <View style={styles.cardNutriscoreContainer}>
-              <View style={[styles.nutriscoreCircle, { backgroundColor: getNutriScoreColor(nutriscore) }]} />
-              <Text style={styles.cardNutriscore}>{nutriscore || '?'}</Text>
+              <View style={[styles.nutriscoreCircle, { backgroundColor: getNutriScoreColor(nutriscoreUpper) }]} />
+              <Text style={styles.cardNutriscore}>{nutriscoreUpper || '?'}</Text>
             </View>
           </View>
         </View>

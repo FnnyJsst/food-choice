@@ -1,19 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
+// Import du reducer qui gère l'état des produits
 import productReducer from './productStore';
 
+// Création du store
 export const store = configureStore({
+  // Création du reducer, qui gère l'état des produits
   reducer: {
     products: productReducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        // Ignore ces chemins dans l'état
-        ignoredActions: ['products/addToFavorites'],
-        // Ignore ces chemins dans l'état
-        ignoredPaths: ['products.favorites'],
-      },
-    }),
+  }
 });
 
 export default store; 

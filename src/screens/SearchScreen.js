@@ -33,15 +33,19 @@ const SearchScreen = () => {
     setSearchQuery(text);
   }, []);
 
-  const renderProduct = ({ item }) => (
-    <FavoriteCards
-      product={item}
-      title={item.product_name}
-      brand={item.brands}
-      nutriscore={item.nutriscore_grade}
-      imageUrl={item.image_url}
-    />
-  );
+  const renderProduct = ({ item }) => {
+    // Convertir le nutriscore en majuscules
+    const nutriscore = item.nutrition_grades?.toUpperCase() || '?';
+    return (
+      <FavoriteCards
+        product={item}
+        title={item.product_name}
+        brand={item.brands}
+        nutriscore={nutriscore}
+        imageUrl={item.image_url}
+      />
+    );
+  };
 
   return (
     <View style={styles.container}>

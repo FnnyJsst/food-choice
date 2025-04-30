@@ -5,7 +5,6 @@ const BASE_URL = 'https://world.openfoodfacts.org/cgi/search.pl';
 export const searchProducts = async (query, dispatch) => {
   try {
     dispatch(setLoading(true));
-    dispatch(setLastSearch(query));
     
     const url = `${BASE_URL}?search_terms=${encodeURIComponent(query)}&json=1`;
     const response = await fetch(url, {
