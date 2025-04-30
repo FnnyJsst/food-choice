@@ -35,6 +35,7 @@ const SearchScreen = () => {
 
   const renderProduct = ({ item }) => (
     <FavoriteCards
+      product={item}
       title={item.product_name}
       brand={item.brands}
       nutriscore={item.nutriscore_grade}

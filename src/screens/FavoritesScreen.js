@@ -6,66 +6,66 @@ import { checkDatabase } from '../services/databaseService';
 import FavoriteCards from '../components/cards/FavoriteCards';
 
 const FavoritesScreen = () => {
-  // const dispatch = useDispatch();
-  // const { favorites, loading, error } = useSelector(state => state.products);
+  const dispatch = useDispatch();
+  const { favorites, loading, error } = useSelector(state => state.products);
 
-  // useEffect(() => {
-  //   // Vérifier la base de données
-  //   checkDatabase()
-  //     .then(() => {
-  //       // Charger les favoris
-  //       dispatch(loadFavorites());
-  //     })
-  //     .catch(error => {
-  //       console.error('Erreur lors de la vérification de la base de données:', error);
-  //     });
-  // }, [dispatch]);
+  useEffect(() => {
+    // Vérifier la base de données
+    checkDatabase()
+      .then(() => {
+        // Charger les favoris
+        dispatch(loadFavorites());
+      })
+      .catch(error => {
+        console.error('Erreur lors de la vérification de la base de données:', error);
+      });
+  }, [dispatch]);
 
-  // const handleRemoveFavorite = (code) => {
-  //   Alert.alert(
-  //     'Retirer des favoris',
-  //     'Voulez-vous vraiment retirer ce produit des favoris ?',
-  //     [
-  //       {
-  //         text: 'Annuler',
-  //         style: 'cancel'
-  //       },
-  //       {
-  //         text: 'Retirer',
-  //         onPress: () => dispatch(removeFromFavoritesAsync(code)),
-  //         style: 'destructive'
-  //       }
-  //     ]
-  //   );
-  // };
+  const handleRemoveFavorite = (code) => {
+    Alert.alert(
+      'Retirer des favoris',
+      'Voulez-vous vraiment retirer ce produit des favoris ?',
+      [
+        {
+          text: 'Annuler',
+          style: 'cancel'
+        },
+        {
+          text: 'Retirer',
+          onPress: () => dispatch(removeFromFavoritesAsync(code)),
+          style: 'destructive'
+        }
+      ]
+    );
+  };
 
-  // if (loading) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text style={styles.text}>Chargement des favoris...</Text>
-  //     </View>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>Chargement des favoris...</Text>
+      </View>
+    );
+  }
 
-  // if (error) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text style={styles.error}>{error}</Text>
-  //     </View>
-  //   );
-  // }
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.error}>{error}</Text>
+      </View>
+    );
+  }
 
-  // if (favorites.length === 0) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text style={styles.text}>Aucun favori pour le moment</Text>
-  //     </View>
-  //   );
-  // }
+  if (!favorites || favorites.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>Aucun favori pour le moment</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      {/* <FlatList
+      <FlatList
         data={favorites}
         renderItem={({ item }) => (
           <TouchableOpacity onLongPress={() => handleRemoveFavorite(item.code)}>
@@ -74,12 +74,13 @@ const FavoritesScreen = () => {
               brand={item.brands}
               nutriscore={item.nutriscore_grade}
               imageUrl={item.image_url}
+              product={item}
             />
           </TouchableOpacity>
         )}
         keyExtractor={item => item.code}
         contentContainerStyle={styles.listContainer}
-      /> */}
+      />
     </View>
   );
 };

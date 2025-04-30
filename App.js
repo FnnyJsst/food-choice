@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ScannerScreen from './src/screens/ScannerScreen';
 import { Provider } from 'react-redux';
 import store from './src/store';
-import { initDatabase } from './src/services/databaseService';
 
 
 // Import des écrans
@@ -16,10 +15,6 @@ import ProfileScreen from './src/screens/ProfileScreen';
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-
-  useEffect(() => {
-    initDatabase();
-  }, []);
 
   return (
     <Provider store={store}>

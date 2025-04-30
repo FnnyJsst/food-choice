@@ -3,9 +3,9 @@ import * as SQLite from 'expo-sqlite';
 // Initialiser la base de données
 export const initDatabase = async () => {
   try {
+    console.log('Tentative d\'initialisation de la base de données...');
     const db = await SQLite.openDatabaseAsync('favorites.db');
-    console.log('Base de données initialisée avec succès');
-    console.log(db);
+    console.log('Base de données ouverte avec succès');
     
     // Créer la table des favoris
     await db.execAsync(`
@@ -19,6 +19,7 @@ export const initDatabase = async () => {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    console.log('Table favorites créée ou vérifiée avec succès');
     
     return db;
   } catch (error) {
@@ -30,14 +31,20 @@ export const initDatabase = async () => {
 // Ajouter un favori
 export const addFavorite = async (product) => {
   try {
+    console.log('Tentative d\'ajout du produit aux favoris:', product);
+    if (!product || !product.code) {
+      throw new Error('Produit invalide: code manquant');
+    }
+
     const db = await SQLite.openDatabaseAsync('favorites.db');
-//     const result = await db.runAsync(
-//       'INSERT OR REPLACE INTO favorites (code, product_name, brands, nutriscore_grade, image_url) VALUES (?, ?, ?, ?, ?)',
-//       [product.code, product.product_name, product.brands, product.nutriscore_grade, product.image_url]
-//     );
-    // console.log('Produit ajouté aux favoris:', result.lastInsertRowId);
-    console.log('Database opened');
-    // return result;
+    console.log('Base de données ouverte pour l\'ajout');
+    
+    const result = await db.runAsync(
+      'INSERT OR REPLACE INTO favorites (code, product_name, brands, nutriscore_grade, image_url) VALUES (?, ?, ?, ?, ?)',
+      [product.code, product.product_name, product.brands, product.nutriscore_grade, product.image_url]
+    );
+    console.log('Produit ajouté aux favoris avec succès:', result.lastInsertRowId);
+    return result;
   } catch (error) {
     console.error('Erreur lors de l\'ajout aux favoris:', error);
     throw error;
@@ -45,30 +52,42 @@ export const addFavorite = async (product) => {
 };
 
 // Supprimer un favori
-// export const removeFavorite = async (code) => {
-//   try {
-//     const db = await SQLite.openDatabaseAsync('favorites.db');
-//     const result = await db.runAsync('DELETE FROM favorites WHERE code = ?', [code]);
-//     console.log('Produit retiré des favoris:', result.changes);
-//     return result;
-//   } catch (error) {
-//     console.error('Erreur lors de la suppression des favoris:', error);
-//     throw error;
-//   }
-// };
+export const removeFavorite = async (code) => {
+  try {
+    const db = await SQLite.openDatabaseAsync('favorites.db');
+    const result = await db.runAsync('DELETE FROM favorites WHERE code = ?', [code]);
+    console.log('Produit retiré des favoris:', result.changes);
+    return result;
+  } catch (error) {
+    console.error('Erreur lors de la suppression des favoris:', error);
+    throw error;
+  }
+};
 
 // Récupérer tous les favoris
-// export const getFavorites = async () => {
-//   try {
-//     const db = await SQLite.openDatabaseAsync('favorites.db');
-//     const favorites = await db.getAllAsync('SELECT * FROM favorites ORDER BY created_at DESC');
-//     console.log('Favoris récupérés:', favorites.length);
-//     return favorites;
-//   } catch (error) {
-//     console.error('Erreur lors de la récupération des favoris:', error);
-//     throw error;
-//   }
-// };
+export const getFavorites = async () => {
+  try {
+    const db = await SQLite.openDatabaseAsync('favorites.db');
+    const favorites = await db.getAllAsync('SELECT * FROM favorites ORDER BY created_at DESC');
+    console.log('Favoris récupérés:', favorites.length);
+    return favorites;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des favoris:', error);
+    throw error;
+  }
+};
+
+// Vérifier la base de données
+export const checkDatabase = async () => {
+  try {
+    const db = await SQLite.openDatabaseAsync('favorites.db');
+    const result = await db.getFirstAsync('SELECT name FROM sqlite_master WHERE type = "table" AND name = "favorites"');
+    return result !== null;
+  } catch (error) { 
+    console.error('Erreur lors de la vérification de la base de données:', error);
+    throw error;
+  }
+};
 
 // Vérifier si un produit est en favoris
 // export const isFavorite = async (code) => {

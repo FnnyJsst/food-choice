@@ -1,8 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'
+import { useDispatch } from 'react-redux';
+import { addToFavoritesAsync } from '../../store/productStore';
 
-const FavoriteCards = ({ title, brand, nutriscore, imageUrl }) => {
+
+const FavoriteCards = ({ title, brand, nutriscore, imageUrl, product }) => {
+  const dispatch = useDispatch();
+
+  const handleAddToFavorites = () => {
+    console.log('Tentative d\'ajout aux favoris:', product);
+    if (!product) {
+      console.log('Erreur: product est undefined');
+      return;
+    }
+    dispatch(addToFavoritesAsync(product));
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.card}>
@@ -16,7 +30,9 @@ const FavoriteCards = ({ title, brand, nutriscore, imageUrl }) => {
           <View style={styles.cardInfoContainer}>
             <View style={styles.cardTitleContainer}>
               <Text style={styles.cardTitle}>{title || 'Produit'}</Text>
-              <Ionicons name="heart-outline" size={15} color="gray" />
+              <TouchableOpacity onPress={handleAddToFavorites}>
+                <Ionicons name="heart-outline" size={15} color="gray" />
+              </TouchableOpacity>
             </View>
             <Text style={styles.cardBrand}>{brand || 'Marque inconnue'}</Text>
             <View style={styles.cardNutriscoreContainer}>

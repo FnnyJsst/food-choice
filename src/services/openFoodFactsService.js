@@ -27,12 +27,13 @@ export const searchProducts = async (query, dispatch) => {
     
     const data = await response.json();
     
+    
     if (!data.products || !Array.isArray(data.products)) {
       throw new Error('Format de réponse inattendu');
     }
     
     dispatch(setProducts(data.products));
-    dispatch(addToSearchHistory(query));
+    // dispatch(addToSearchHistory(query));
     return data.products;
   } catch (error) {
     dispatch(setError(error.message));
