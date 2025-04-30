@@ -11,7 +11,6 @@ const FavoriteCards = ({ title, brand, nutriscore, imageUrl, product }) => {
 
   const handleToggleFavorite = () => {
     if (!product) {
-      console.log('Erreur: product est undefined');
       return;
     }
     if (isFavorite) {
@@ -34,7 +33,7 @@ const FavoriteCards = ({ title, brand, nutriscore, imageUrl, product }) => {
         <View style={styles.cardHeader}>
           <View style={styles.cardImageContainer}>
             <Image 
-              source={imageUrl ? { uri: imageUrl } : require('../../../assets/burger.png')} 
+              source={imageUrl ? { uri: imageUrl } : null} 
               style={styles.cardImage}
               onError={(e) => console.log('Erreur de chargement de l\'image:', e.nativeEvent.error)} 
             />
@@ -45,7 +44,7 @@ const FavoriteCards = ({ title, brand, nutriscore, imageUrl, product }) => {
               <TouchableOpacity onPress={handleToggleFavorite}>
                 <Ionicons 
                   name={isFavorite ? "heart" : "heart-outline"} 
-                  size={15} 
+                  size={16} 
                   color={isFavorite ? "#FF6B6B" : "gray"} 
                 />
               </TouchableOpacity>
@@ -74,8 +73,6 @@ const getNutriScoreColor = (score) => {
       return '#FF9F1C';
     case 'E':
       return '#FF6B6B';
-    case 'Non spécifié':
-      return '#CCCCCC';
     default:
       return '#CCCCCC';
   }
@@ -86,7 +83,6 @@ export default FavoriteCards;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     width: '100%',
     padding: 15,
   },
@@ -125,6 +121,8 @@ const styles = StyleSheet.create({
     gap: 10,
     alignItems: 'center',
     marginBottom: 5,
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   cardTitle: {
     fontSize: 18,

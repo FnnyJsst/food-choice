@@ -34,15 +34,12 @@ const SearchScreen = () => {
   }, []);
 
   const renderProduct = ({ item }) => {
-    console.log('Produit complet:', item);
-    console.log('Nutrition grades:', item.nutrition_grades);
-    // Gérer le cas où le nutriscore n'est pas spécifié
+    const nameShort = item.product_name.length > 20 ? item.product_name.substring(0, 20) + '...' : item.product_name;
     const nutriscore = item.nutrition_grades ? item.nutrition_grades.toUpperCase() : 'Non spécifié';
-    console.log('Nutriscore après traitement:', nutriscore);
     return (
       <FavoriteCards
         product={item}
-        title={item.product_name}
+        title={nameShort}
         brand={item.brands}
         nutriscore={nutriscore}
         imageUrl={item.image_url}
