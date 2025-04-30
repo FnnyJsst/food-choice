@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ScannerScreen from './src/screens/ScannerScreen';
 import { Provider } from 'react-redux';
 import store from './src/store';
+import { initDatabase } from './src/services/databaseService';
+
 
 // Import des écrans
 import SearchScreen from './src/screens/SearchScreen';
@@ -14,6 +16,10 @@ import ProfileScreen from './src/screens/ProfileScreen';
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+
+  useEffect(() => {
+    initDatabase();
+  }, []);
 
   return (
     <Provider store={store}>
